@@ -90,7 +90,7 @@ make serve
 curl -s localhost:8080/invocations -H 'content-type: application/json' -d '{"prompt": "when is Maghrib in Karachi?"}'
 ```
 
-Then `make deploy`.
+Then `make deploy`. Details, gotchas and cleanup: [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## Development
 
@@ -114,6 +114,7 @@ src/karachi_agent/
   runtime.py      AgentCore Runtime entrypoint
   tools/          weather, air_quality, prayer_times, scales
 docs/
+  DEPLOY.md       deploy, invoke, cleanup
   TALK.md         stage runbook
 ```
 
