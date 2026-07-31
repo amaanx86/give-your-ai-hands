@@ -32,6 +32,7 @@ def build_agent(
     *,
     tools: Sequence[Any] | None = None,
     system_prompt: str | None = None,
+    model: BedrockModel | None = None,
 ) -> Agent:
     """Build a ready-to-invoke agent.
 
@@ -39,10 +40,12 @@ def build_agent(
         config: Settings override, defaulting to the process settings.
         tools: Tool override, for a cut-down demo.
         system_prompt: Prompt override, for comparing prompt changes live.
+        model: Share one model provider across agents instead of building one
+            per agent, which would mean a boto3 client per session.
     """
     config = config or settings()
     return Agent(
-        model=build_model(config),
+        model=model or build_model(config),
         system_prompt=system_prompt or SYSTEM_PROMPT,
         tools=list(tools) if tools is not None else list(ALL_TOOLS),
         # A library should not write to stdout, so the caller renders output.
