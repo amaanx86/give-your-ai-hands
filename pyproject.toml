@@ -1,0 +1,89 @@
+[project]
+name = "karachi-city-agent"
+version = "0.1.0"
+description = "A Karachi city assistant built with the Strands Agents SDK, deployable to Amazon Bedrock AgentCore Runtime."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Amaan Ul Haq Siddiqui" }]
+keywords = ["strands", "bedrock", "agentcore", "agents", "karachi"]
+
+dependencies = [
+    "strands-agents==1.50.2",
+    "httpx==0.28.1",
+    # Required by botocore's login credential provider, which an `aws login` or SSO
+    # profile uses. Without it boto3 raises "Missing Dependency" at client setup.
+    "botocore[crt]==1.43.61",
+]
+
+[project.optional-dependencies]
+# Only needed to serve the agent over the AgentCore Runtime HTTP contract.
+runtime = [
+    "bedrock-agentcore==1.19.0",
+    "aws-opentelemetry-distro==0.19.0",
+]
+
+[project.scripts]
+karachi-agent = "karachi_agent.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/amaanx86/give-your-ai-hands"
+
+[dependency-groups]
+dev = [
+    "mypy==2.3.0",
+    "ruff==0.16.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/karachi_agent"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "T20",  # flake8-print
+    "SIM",  # flake8-simplify
+    "PTH",  # flake8-use-pathlib
+    "RUF",  # ruff-specific
+    "ANN",  # flake8-annotations
+    "S",    # flake8-bandit
+    "TRY",  # tryceratops
+]
+ignore = [
+    "ANN401",  # Any is fine at adapter boundaries
+    "TRY003",  # long messages outside the exception class are fine here
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/karachi_agent/cli.py" = ["T201"]  # the CLI is allowed to print
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+disallow_untyped_decorators = false  # @strands.tool is untyped upstream
+
+[[tool.mypy.overrides]]
+module = ["strands.*", "bedrock_agentcore.*"]
+ignore_missing_imports = true
