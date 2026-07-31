@@ -31,5 +31,3 @@ KarachiAgent/app/KarachiAgent/karachi_agent/
 # Deploy target records the AWS account id; keep it out of a public repo
 KarachiAgent/agentcore/aws-targets.json
 
-# Local deploy state, embeds account id in resource ARNs
-KarachiAgent/agentcore/.cli/deployed-state.json
