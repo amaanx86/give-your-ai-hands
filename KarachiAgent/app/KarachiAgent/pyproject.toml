@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "KarachiAgent"
+version = "0.1.0"
+description = "AgentCore Runtime Application using Strands SDK"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # The agent itself, resolved from GitHub at build time. Its runtime extra
+    # brings bedrock-agentcore and aws-opentelemetry-distro.
+    "karachi-city-agent[runtime] @ git+https://github.com/amaanx86/give-your-ai-hands.git@main",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
