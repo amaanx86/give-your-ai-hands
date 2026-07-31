@@ -24,3 +24,6 @@ cdk.out/
 
 # macOS
 .DS_Store
+
+# Vendored at package time, generated from src/
+KarachiAgent/app/KarachiAgent/karachi_agent/

@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install fmt lint types check run repl tools serve deploy invoke logs clean
+.PHONY: help install fmt lint types check run repl tools serve package deploy dry-run invoke logs clean
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':.*?## ' '{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -32,14 +32,22 @@ tools: ## Print the tool schemas Strands generated from the Python
 serve: ## Serve the AgentCore contract locally on port 8080
 	uv run python -m karachi_agent.runtime
 
-deploy: ## Deploy to AgentCore Runtime
-	bunx @aws/agentcore deploy
+package: ## Vendor karachi_agent into the AgentCore app directory
+	rm -rf KarachiAgent/app/KarachiAgent/karachi_agent
+	cp -R src/karachi_agent KarachiAgent/app/KarachiAgent/karachi_agent
+	find KarachiAgent/app/KarachiAgent/karachi_agent -name __pycache__ -type d -prune -exec rm -rf {} +
+
+deploy: package ## Deploy to AgentCore Runtime
+	cd KarachiAgent && bunx @aws/agentcore deploy
+
+dry-run: package ## Preview the deployment without changing anything
+	cd KarachiAgent && bunx @aws/agentcore deploy --dry-run
 
 invoke: ## Invoke the deployed agent, e.g. make invoke Q="when is Maghrib?"
-	bunx @aws/agentcore invoke --stream "$(Q)"
+	cd KarachiAgent && bunx @aws/agentcore invoke --stream "$(Q)"
 
 logs: ## Stream logs from the deployed agent
-	bunx @aws/agentcore logs
+	cd KarachiAgent && bunx @aws/agentcore logs
 
 clean: ## Remove caches and build artifacts
 	rm -rf .ruff_cache .mypy_cache dist build cdk.out
