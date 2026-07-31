@@ -27,3 +27,6 @@ cdk.out/
 
 # Vendored at package time, generated from src/
 KarachiAgent/app/KarachiAgent/karachi_agent/
+
+# Deploy target records the AWS account id; keep it out of a public repo
+KarachiAgent/agentcore/aws-targets.json
